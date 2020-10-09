@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-Este é um arquivo de script temporário.
-"""
 
 from IPython import get_ipython
 get_ipython().run_line_magic('matplotlib', 'qt')
@@ -31,3 +26,52 @@ plt.plot(t1,y1)
 plt.legend(('Gmf'))
 plt.xlabel('Tempo(s)')
 plt.ylabel('Amplitude')
+
+#Função de transferencia da planta
+
+Ksensor = 0.5
+Kph = 0.000239
+
+Gplanta = G * Ksensor * Kph
+print(Gplanta)
+
+Gmf = feedback(Gplanta, 1)
+
+y1, t1 = step(Gmf, t)
+plt.figure()
+plt.plot(t1,y1)
+plt.legend(('Gmf'))
+plt.xlabel('Tempo(s)')
+plt.ylabel('Amplitude')
+
+#Compensadores
+
+Kc = 41.05
+numPD = [1, 12.74]
+denPD = [1]
+PD = ctrl.tf(numPD, denPD)
+print(PD)
+
+numPI = [1, 0.005]
+denPI = [1, 0]
+PI = ctrl.tf(numPI, denPI)
+print(PI)
+
+Gc = Kc * PD * PI
+print(Gc)
+
+#Gráfico do Projeto Compensado
+
+Gfinal = feedback(Gc*Gplanta, 1)
+
+t2 = np.linspace(0, 100, 1000)
+y1, t1 = step(Gfinal, t2)
+plt.figure()
+plt.plot(t1,y1)
+plt.legend(('Gmf'))
+plt.xlabel('Tempo(s)')
+plt.ylabel('Amplitude')
+
+
+
+
